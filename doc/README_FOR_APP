@@ -1,0 +1,16 @@
+Autentizace pomocí služby AccountsService:
+
+1) Pridat gem implementujici prihlaseni a odhlaseni pomoci teto sluzby
+
+2) app/controllers/application_controller.rb:
+
+  before_filter :ensure_authenticated
+
+  protected
+
+  def ensure_authenticated
+    if session[:user_id].blank?
+      render json: { authorized: false }, status: 401
+    end
+  end
+
