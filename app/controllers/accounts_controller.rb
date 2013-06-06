@@ -5,7 +5,7 @@ class AccountsController < BaseController
   ##
   # Overi login, heslo a aplikaci uzivatele
   def authenticate
-    @application = Application.find_by_id(params[:application_id])
+    @application = Application.find_by_name(params[:application_code])
 
     if @application
       @application_account = @application.account_applications
@@ -16,7 +16,7 @@ class AccountsController < BaseController
     end
 
     if @account  and @account.authenticate(params[:password])
-      render json: { content: @application_account, authorized: true }, root: false
+      render json: @application_account
     else
       render json: { authorized: false }, status: 401
     end

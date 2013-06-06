@@ -14,12 +14,12 @@ describe AccountsController do
 
     response.status.should == 200
     body = ActiveSupport::JSON.decode(response.body)
-    body["content"].count.should == 2
-    body["content"][0]["name"].should == 'Jara Cimrman'
-    body["content"][1]["name"].should == 'Varel Frištenský'
+    body.count.should == 2
+    body[0]["account"]["name"].should == 'Jara Cimrman'
+    body[1]["account"]["name"].should == 'Varel Frištenský'
 
-    body["meta"]["total_pages"].should == 1
-    body["meta"]["total_entries"].should == 2
+    #body["meta"]["total_pages"].should == 1
+    #body["meta"]["total_entries"].should == 2
   end
 
   ## SHOW #####################################################################
@@ -29,7 +29,7 @@ describe AccountsController do
     response.status.should == 200
     body = ActiveSupport::JSON.decode(response.body)
     %w{id name login status}.each do |attribute|
-      body["content"][attribute].should == @account_1.send(attribute.to_sym)
+      body["account"][attribute].should == @account_1.send(attribute.to_sym)
     end
   end
 
@@ -39,7 +39,7 @@ describe AccountsController do
 
     response.status.should == 200
     body = ActiveSupport::JSON.decode(response.body)
-    body["content"]["id"].should == Account.last.id
+    body["account"]["id"].should == Account.last.id
   end
 
   it "nevytvori ucet bez nazvu" do
@@ -92,23 +92,31 @@ describe AccountsController do
         login: "robot",
         password: 'heslo')
 
-      @application = Application.create!(name: "app")
+      @application = Application.create!(name: "app", id: 'app')
 
-      AccountApplication.create!(account_id: account.id, application_id: @application.id, user_id: 155)
+      AccountApplication.create!(account_id: account.id,
+                                 application_id: @application.id,
+                                 user_id: 155)
     end
 
     it "se spravnymi udaji vrati uzivatele" do
       get :authenticate,
-        format: :json, application_id: @application.id, login: 'robot', password: 'heslo'
+        format: :json,
+        application_code: 'app',
+        login: 'robot',
+        password: 'heslo'
 
       response.status.should == 200
       body = ActiveSupport::JSON.decode(response.body)
-      body["content"]["user_id"].should == 155
+      body["account_application"]["user_id"].should == 155
     end
 
     it "s nespravnymi udaji vrati chybu" do
       get :authenticate,
-        format: :json, application_id: @application.id, login: 'robot', password: 'spatneheslo'
+        format: :json,
+        application_id: @application.id,
+        login: 'robot',
+        password: 'spatneheslo'
 
       response.status.should == 401
     end

@@ -14,12 +14,12 @@ describe ApplicationsController do
 
     response.status.should == 200
     body = ActiveSupport::JSON.decode(response.body)
-    body["content"].count.should == 2
-    body["content"][0]["name"].should == 'intranet'
-    body["content"][1]["name"].should == 'upd'
+    body.count.should == 2
+    body[0]["application"]["name"].should == 'intranet'
+    body[1]["application"]["name"].should == 'upd'
 
-    body["meta"]["total_pages"].should == 1
-    body["meta"]["total_entries"].should == 2
+#    body["meta"]["total_pages"].should == 1
+#    body["meta"]["total_entries"].should == 2
   end
 
   ## SHOW #####################################################################
@@ -29,7 +29,7 @@ describe ApplicationsController do
     response.status.should == 200
     body = ActiveSupport::JSON.decode(response.body)
     %w{id name}.each do |attribute|
-      body["content"][attribute].should == @application_1.send(attribute.to_sym)
+      body["application"][attribute].should == @application_1.send(attribute.to_sym)
     end
   end
 
@@ -39,7 +39,7 @@ describe ApplicationsController do
 
     response.status.should == 200
     body = ActiveSupport::JSON.decode(response.body)
-    body["content"]["id"].should == Application.last.id
+    body["application"]["id"].should == Application.last.id
   end
 
   it "nevytvori aplikaci bez nazvu" do

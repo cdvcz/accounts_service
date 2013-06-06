@@ -4,22 +4,14 @@ class BaseController < ActionController::API
   def index
     search    = resource_class.search(params[:search])
     resources = search.paginate(page: params[:page])
-
-    render json: {
-      content: resources,
-      meta: {
-        total_pages: resources.total_pages,
-        total_entries: resources.total_entries
-      }
-    },
-    root: false
+    render json: resources
   end
 
   ##
   # Detail zaznamu
   def show
     resource = resource_class.find(params[:id])
-    render json: resource, root: 'content'
+    render json: resource
   end
 
   ##
@@ -27,9 +19,9 @@ class BaseController < ActionController::API
    def create
     resource = resource_class.create(resource_params)
     if resource.save
-      render json: resource, root: "content"
+      render json: resource
     else
-      render json: {errors: resource.errors}, status: 422
+      render json: {errors: resource.errors}, status: :unprocessable_entity
     end
   end
 
@@ -40,7 +32,7 @@ class BaseController < ActionController::API
     if resource.update_attributes(resource_params)
       render json: {}, status: 204
     else
-      render json: {errors: resource.errors}, status: 422
+      render json: {errors: resource.errors}, status: :unprocessable_entity
     end
   end
 

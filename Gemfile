@@ -7,7 +7,6 @@ gem 'mysql2'
 gem 'bcrypt-ruby', '~> 3.0.0'
 gem 'will_paginate'
 gem 'meta_search'
-gem 'active_model_serializers'
 
 group :test, :development do
   gem 'pry'
