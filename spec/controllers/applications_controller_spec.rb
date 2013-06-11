@@ -14,12 +14,11 @@ describe ApplicationsController do
 
     response.status.should == 200
     body = ActiveSupport::JSON.decode(response.body)
-    body.count.should == 2
-    body[0]["application"]["name"].should == 'intranet'
-    body[1]["application"]["name"].should == 'upd'
-
-#    body["meta"]["total_pages"].should == 1
-#    body["meta"]["total_entries"].should == 2
+    body["content"].count.should == 2
+    body["content"][0]["application"]["name"].should == 'intranet'
+    body["content"][1]["application"]["name"].should == 'upd'
+    body["meta"]["total_pages"].should == 1
+    body["meta"]["total_entries"].should == 2
   end
 
   ## SHOW #####################################################################
@@ -29,7 +28,7 @@ describe ApplicationsController do
     response.status.should == 200
     body = ActiveSupport::JSON.decode(response.body)
     %w{id name}.each do |attribute|
-      body["application"][attribute].should == @application_1.send(attribute.to_sym)
+      body["content"]["application"][attribute].should == @application_1.send(attribute.to_sym)
     end
   end
 
@@ -39,7 +38,7 @@ describe ApplicationsController do
 
     response.status.should == 200
     body = ActiveSupport::JSON.decode(response.body)
-    body["application"]["id"].should == Application.last.id
+    body["content"]["application"]["id"].should == Application.last.id
   end
 
   it "nevytvori aplikaci bez nazvu" do
@@ -47,7 +46,7 @@ describe ApplicationsController do
 
     response.status.should == 422
     body = ActiveSupport::JSON.decode(response.body)
-    body["errors"]["name"].should include "Toto pole nemůže zůstat prázdné"
+    body["content"]["errors"]["name"].should include "Toto pole nemůže zůstat prázdné"
   end
 
   ## UPDATE ###################################################################
@@ -68,7 +67,7 @@ describe ApplicationsController do
 
     response.status.should == 422
     body = ActiveSupport::JSON.decode(response.body)
-    body["errors"]["name"].should include "Toto pole nemůže zůstat prázdné"
+    body["content"]["errors"]["name"].should include "Toto pole nemůže zůstat prázdné"
   end
 
   ## DESTROY ###################################################################

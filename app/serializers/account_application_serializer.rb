@@ -1,0 +1,2 @@
+class AccountApplicationSerializer < BaseSerializer
+end

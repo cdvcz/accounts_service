@@ -14,12 +14,12 @@ describe AccountsController do
 
     response.status.should == 200
     body = ActiveSupport::JSON.decode(response.body)
-    body.count.should == 2
-    body[0]["account"]["name"].should == 'Jara Cimrman'
-    body[1]["account"]["name"].should == 'Varel Frištenský'
+    body["content"].count.should == 2
+    body["content"][0]["account"]["name"].should == 'Jara Cimrman'
+    body["content"][1]["account"]["name"].should == 'Varel Frištenský'
 
-    #body["meta"]["total_pages"].should == 1
-    #body["meta"]["total_entries"].should == 2
+    body["meta"]["total_pages"].should == 1
+    body["meta"]["total_entries"].should == 2
   end
 
   ## SHOW #####################################################################
@@ -29,7 +29,7 @@ describe AccountsController do
     response.status.should == 200
     body = ActiveSupport::JSON.decode(response.body)
     %w{id name login status}.each do |attribute|
-      body["account"][attribute].should == @account_1.send(attribute.to_sym)
+      body["content"]["account"][attribute].should == @account_1.send(attribute.to_sym)
     end
   end
 
@@ -39,7 +39,7 @@ describe AccountsController do
 
     response.status.should == 200
     body = ActiveSupport::JSON.decode(response.body)
-    body["account"]["id"].should == Account.last.id
+    body["content"]["account"]["id"].should == Account.last.id
   end
 
   it "nevytvori ucet bez nazvu" do
@@ -47,7 +47,7 @@ describe AccountsController do
 
     response.status.should == 422
     body = ActiveSupport::JSON.decode(response.body)
-    body["errors"]["name"].should include "Toto pole nemůže zůstat prázdné"
+    body["content"]["errors"]["name"].should include "Toto pole nemůže zůstat prázdné"
   end
 
   ## UPDATE ###################################################################
@@ -68,7 +68,7 @@ describe AccountsController do
 
     response.status.should == 422
     body = ActiveSupport::JSON.decode(response.body)
-    body["errors"]["name"].should include "Toto pole nemůže zůstat prázdné"
+    body["content"]["errors"]["name"].should include "Toto pole nemůže zůstat prázdné"
   end
 
   ## DESTROY ###################################################################
@@ -108,7 +108,7 @@ describe AccountsController do
 
       response.status.should == 200
       body = ActiveSupport::JSON.decode(response.body)
-      body["account_application"]["user_id"].should == 155
+      body["content"]["account_application"]["user_id"].should == 155
     end
 
     it "s nespravnymi udaji vrati chybu" do

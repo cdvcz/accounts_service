@@ -26,12 +26,13 @@ describe AccountApplicationsController do
 
     response.status.should == 200
     body = ActiveSupport::JSON.decode(response.body)
-    body.count.should == 2
-    body[0]["account_application"]["application_id"].should == @application_1.id
-    body[1]["account_application"]["application_id"].should == @application_2.id
+    body["content"].count.should == 2
 
-    #body["meta"]["total_pages"].should == 1
-    #body["meta"]["total_entries"].should == 2
+    body["content"][0]["account_application"]["application_id"].should == @application_1.id
+    body["content"][1]["account_application"]["application_id"].should == @application_2.id
+
+    body["meta"]["total_pages"].should == 1
+    body["meta"]["total_entries"].should == 2
   end
 
   ## SHOW #####################################################################
@@ -41,7 +42,7 @@ describe AccountApplicationsController do
     response.status.should == 200
     body = ActiveSupport::JSON.decode(response.body)
     %w{id account_id application_id user_id}.each do |attribute|
-      body["account_application"][attribute].should == @aa_1.send(attribute.to_sym)
+      body["content"]["account_application"][attribute].should == @aa_1.send(attribute.to_sym)
     end
   end
 
@@ -54,7 +55,7 @@ describe AccountApplicationsController do
 
     response.status.should == 200
     body = ActiveSupport::JSON.decode(response.body)
-    body["account_application"]["id"].should == AccountApplication.last.id
+    body["content"]["account_application"]["id"].should == AccountApplication.last.id
   end
 
   it "nevytvori account_application bez id aplikace" do
@@ -62,7 +63,7 @@ describe AccountApplicationsController do
 
     response.status.should == 422
     body = ActiveSupport::JSON.decode(response.body)
-    body["errors"]["application"].should include "Toto pole nemůže zůstat prázdné"
+    body["content"]["errors"]["application"].should include "Toto pole nemůže zůstat prázdné"
   end
 
   ## UPDATE ###################################################################
@@ -83,7 +84,7 @@ describe AccountApplicationsController do
 
     response.status.should == 422
     body = ActiveSupport::JSON.decode(response.body)
-    body["errors"]["application"].should include "Toto pole nemůže zůstat prázdné"
+    body["content"]["errors"]["application"].should include "Toto pole nemůže zůstat prázdné"
   end
 
   ## DESTROY ###################################################################

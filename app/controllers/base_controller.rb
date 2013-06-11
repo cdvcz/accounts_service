@@ -1,11 +1,15 @@
 class BaseController < ActionController::API
+
   ##
   # Seznam zaznamu
   def index
     search    = resource_class.search(params[:search])
     resources = search.paginate(page: params[:page])
-    render json: resources
-  end
+
+    render json: resources,
+           meta: { total_entries: resources.total_entries,
+                   total_pages: resources.total_pages }
+   end
 
   ##
   # Detail zaznamu
@@ -21,7 +25,8 @@ class BaseController < ActionController::API
     if resource.save
       render json: resource
     else
-      render json: {errors: resource.errors}, status: :unprocessable_entity
+      render json: { content: { errors: resource.errors } },
+             status: :unprocessable_entity
     end
   end
 
@@ -30,19 +35,21 @@ class BaseController < ActionController::API
   def update
     resource = resource_class.find(params[:id])
     if resource.update_attributes(resource_params)
-      render json: {}, status: 204
+      render json: {},
+             status: 204
     else
-      render json: {errors: resource.errors}, status: :unprocessable_entity
+      render json: { content: {errors: resource.errors} },
+             status: :unprocessable_entity
     end
   end
-
 
   ##
   # Smaze zaznam
   def destroy
     resource = resource_class.find(params[:id])
     resource.destroy
-    render json: {}, status: 204
+    render json: {},
+           status: 204
   end
 
   protected
