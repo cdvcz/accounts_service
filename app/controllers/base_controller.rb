@@ -36,7 +36,7 @@ class BaseController < ActionController::API
     resource = resource_class.find(params[:id])
     if resource.update_attributes(resource_params)
       render json: {},
-             status: 204
+             status: :no_content
     else
       render json: { content: {errors: resource.errors} },
              status: :unprocessable_entity
@@ -49,7 +49,7 @@ class BaseController < ActionController::API
     resource = resource_class.find(params[:id])
     resource.destroy
     render json: {},
-           status: 204
+           status: :no_content
   end
 
   protected
